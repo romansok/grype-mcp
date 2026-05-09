@@ -7,14 +7,15 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   Static-Analysis:
     # Note: changing this job name requires making the same update in the .github/workflows/release.yaml pipeline
     name: "Static analysis"
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -30,6 +31,8 @@ jobs:
     # Note: changing this job name requires making the same update in the .github/workflows/release.yaml pipeline
     name: "Unit tests"
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -47,6 +50,8 @@ jobs:
     # Note: changing this job name requires making the same update in the .github/workflows/release.yaml pipeline
     name: "Quality tests"
     runs-on: ubuntu-22.04-4core-16gb
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -105,6 +110,8 @@ jobs:
     # Note: changing this job name requires making the same update in the .github/workflows/release.yaml pipeline
     name: "Integration tests"
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -116,7 +123,7 @@ jobs:
           cache-test-fixtures: true
 
       - name: Restore integration test cache
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 #v5.0.4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
         with:
           path: ${{ github.workspace }}/test/integration/testdata/cache
           key: ${{ runner.os }}-integration-test-cache-${{ hashFiles('test/integration/testdata/cache.fingerprint') }}
@@ -127,6 +134,8 @@ jobs:
   Build-Snapshot-Artifacts:
     name: "Build snapshot artifacts"
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -158,6 +167,8 @@ jobs:
     name: "Acceptance tests (Linux)"
     needs: [Build-Snapshot-Artifacts]
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
         with:
@@ -174,7 +185,7 @@ jobs:
 
       - name: Restore install.sh test image cache
         id: install-test-image-cache
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 #v5.0.4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
         with:
           path: ${{ github.workspace }}/test/install/cache
           key: ${{ runner.os }}-install-test-image-cache-${{ hashFiles('test/install/cache.fingerprint') }}
@@ -195,6 +206,8 @@ jobs:
     name: "Acceptance tests (Mac)"
     needs: [Build-Snapshot-Artifacts]
     runs-on: macos-latest
+    permissions:
+      contents: read
     steps:
       - name: Install Cosign
         uses: sigstore/cosign-installer@cad07c2e89fa2edd6e2d7bab4c1aa38e53f76003 #v4.1.1
@@ -214,7 +227,7 @@ jobs:
 
       - name: Restore docker image cache for compare testing
         id: mac-compare-testing-cache
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 #v5.0.4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
         with:
           path: image.tar
           key: ${{ runner.os }}-${{ hashFiles('test/compare/mac.sh') }}
@@ -228,6 +241,8 @@ jobs:
     name: "CLI tests (Linux)"
     needs: [Build-Snapshot-Artifacts]
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
         with:
@@ -239,7 +254,7 @@ jobs:
           cache-test-fixtures: true
 
       - name: Restore CLI test-fixture cache
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 #v5.0.4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae #v5.0.5
         with:
           path: ${{ github.workspace }}/test/cli/testdata/cache
           key: ${{ runner.os }}-cli-test-cache-${{ hashFiles('test/cli/testdata/cache.fingerprint') }}
